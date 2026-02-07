@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-br">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Agência KJP | Criatividade e Visão Artística</title>
-    
+
     <!-- Dependências -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
 
     <!-- Configuração Tailwind -->
     <script id="tailwind-config">
@@ -78,18 +82,20 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white transition-colors duration-300">
-    
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white transition-colors duration-300">
+
     <!-- O App será renderizado aqui -->
     <div id="app"></div>
 
     <!-- Lógica JavaScript -->
     <script>
         // --- DADOS (Fácil de editar) ---
-        
+
         const MENU_LINKS = [
-            { label: 'Serviços', href: '#services' },
             { label: 'Para Quem', href: '#for-whom' },
+            { label: 'Serviços', href: '#services' },
             { label: 'Equipe', href: '#team' },
             { label: 'Contato', href: '#contact' },
         ];
@@ -99,7 +105,7 @@
                 title: 'Artistas Independentes',
                 desc: 'Escale sua presença com valor de produção cinematográfico. Cuidamos da estética para que você foque na arte.',
                 icon: 'mic_external_on',
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCefECZ3624r5kSQUmGtUWgp3eniKfJ7bz0aHiagfvcOCD3EWUpM3RtkilFdQpYKwWmqL2NzMrxpZc1PGHQn0mjG_U4zFeZ8N-HkAp49A-85ExMkeKbvO_R5jNnUW8dFRTMwjMz3o66yCMuJHnU_ksl62CgxzwZE1f0Oxq_lmBhcT0fdYdWXP1TFmVNq-yd371OzaveYUjBnFvk0itT-G3qg3Xx5qDKarCmCnbfTSS17_efNHwebDzSBW3JylpcHg4AELPZAxKbLM1m',
+                image: 'ArtistasIndependentes.jpg',
                 type: 'featured'
             },
             {
@@ -126,22 +132,22 @@
             {
                 title: 'Produção Musical',
                 desc: 'Do arranjo inicial à masterização final, criamos sons que ressoam e definem gêneros.',
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCnlxdbvHXvnkO-NWqp16yEDd5FwR4kiR3uLu7Tp4fC4SzsogI-j1JV3OMCsjwazQSPEaKT-lWRhymtyJqTbPwU8zYQs-79iRAYSlY_fQNhWqDHai_bjm2pYUPoUsUi0EmjXWoetQBuStIDkOHwVSUv_S9kr85k8Y4p8qoC-MccR5eSiEFWJUMX9udJiTQ9CfOttuH6762wgA_i0KyECICeydeiHunf0fWRqtT0G-SWzkA_SXHEC_LRRSAlsEGFVgWO6juD9kBAqIti'
+                image: 'ProducaoMusical.jpg'
             },
             {
                 title: 'Audiovisual',
                 desc: 'Clipes cinematográficos e histórias de marca capturadas com equipamentos de ponta.',
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuARIBqF1txY0tmg6Cgf_adKI9Nksjnq1Uj0SaHQZ102IOsFmH8nIc2HaR1oEtDnM6PB6Q-Zn2IjwZUMtMJU-oyX5Js0Rnm5z0vgWDRgjxsiMjD7-WOORg1upVDX5jSmI-JRZgYXWEQdcs8KdtZJ58nzTK56t0K0KGZeHqNcJYyHPqiaRUuiAXJxheO8vbXjUBMS9hd64Pu44GnWVbqAhgGYxagG1DNZpOZefSv_wX6Ak_3la3CUF4dCD6aP0z6ORoQUF17ZlhbNybIK'
+                image: 'Audiovisual.jpg'
             },
             {
                 title: 'Gestão de Carreira',
                 desc: 'Planejamento 360º para artistas que buscam profissionalismo e crescimento sustentável.',
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDwaGzboP791-_7YG1sG58KzzOwl-zpA6UiLz-VjZeGBT7diZzV9YIrMwi46OtYXt42DB9CptTOvtUN3PFZ753iyeouQMZb_cTFo2YyyEsWLo3zM2Oxd1QRwyr9jDrCp_7PaQEWwCzgsfWkyGtoUjaQsqwPbCNt_eW8fj9Fg8b3EPG-_kqNrcrddhzAfWXFBhZiG_F-5TSoAYbBcL3D6o-2PX3j1IWSVMvDgtosgOCS6wbJ1g2n-2QYz0zRe-GYtOXbbQiI39Fhb65T'
+                image: 'GestaodeCarreira.jpg'
             },
             {
                 title: 'Marketing & Conteúdo',
                 desc: 'Estratégias digitais orientadas a dados para garantir que sua visão alcance o público certo.',
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYUjclljIxDkW6OCM8NezmBJ061Ctt7EVh2Wdrn0lgVtFDpnUksGbnA3mo2WtDeGWiOfJAI6HmNCSIzW48th9R8E2DmrDjmU7faWOdg8so5x3DVCaUYOfuUlEllydURIs2HTZamcs2s1ucUYBW52T5oEh6pJvtM_xL9GfxcW-thnn3csfgGnr72RMfRvic8lgCbBzYwGdDlIO60YDRhHYHiN0YrpqFt4wtZ9yZghpLXo8zlZuDEVK6lbtAM-eXoWN0I2Cbf0hEnuxU'
+                image: 'Marketing&Conteudo.jpg'
             }
         ];
 
@@ -171,25 +177,52 @@
 
         class Header {
             render() {
-                const navLinks = MENU_LINKS.map(link => 
+                // Links para Desktop
+                const navLinks = MENU_LINKS.map(link =>
                     `<a class="text-sm font-medium hover:text-primary transition-colors" href="${link.href}">${link.label}</a>`
                 ).join('');
 
+                // Links para Mobile (Maiores e com ação de fechar ao clicar)
+                const mobileLinks = MENU_LINKS.map(link =>
+                    `<a class="text-3xl font-black uppercase tracking-tight hover:text-primary transition-colors" 
+                href="${link.href}" 
+                onclick="toggleMobileMenu()">
+                ${link.label}
+             </a>`
+                ).join('');
+
                 return `
-                <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/5 dark:border-border-dark w-full">
-                    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                        ${new Logo().render()}
-                        <nav class="hidden md:flex items-center gap-10">
-                            ${navLinks}
-                        </nav>
-                        <button class="bg-primary hover:bg-red-700 text-white px-4 md:px-6 py-2.5 rounded-lg text-sm font-bold transition-all transform hover:scale-105 whitespace-nowrap hidden sm:block">
-                            Falar com a Agência
-                        </button>
-                    </div>
-                </header>`;
+        <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/5 dark:border-border-dark w-full transition-all duration-300" id="main-header">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between relative z-50">
+                ${new Logo().render()}
+                
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-10">
+                    ${navLinks}
+                </nav>
+                
+                <!-- Desktop CTA -->
+                <button class="hidden md:block bg-primary hover:bg-red-700 text-white px-4 md:px-6 py-2.5 rounded-lg text-sm font-bold transition-all transform hover:scale-105 whitespace-nowrap">
+                    Falar com a Agência
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white p-2 focus:outline-none z-50" onclick="toggleMobileMenu()" aria-label="Menu">
+                    <span id="menu-icon" class="material-symbols-outlined text-3xl transition-transform duration-300">menu</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Overlay -->
+            <div id="mobile-menu" class="fixed inset-0 bg-background-dark/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 opacity-0 invisible transition-all duration-500 transform translate-y-4">
+                ${mobileLinks}
+                <div class="w-16 h-1 bg-primary/20 rounded-full my-4"></div>
+                <button class="bg-primary hover:bg-red-700 text-white px-8 py-4 rounded-xl text-lg font-bold transition-all w-3/4 shadow-2xl shadow-primary/20">
+                    Falar com a Agência
+                </button>
+            </div>
+        </header>`;
             }
         }
-
         class Hero {
             render() {
                 // Ajuste: Reduzi o texto no mobile de 5xl para 4xl e adicionei break-words
@@ -236,8 +269,8 @@
                             <h4 class="text-2xl md:text-3xl font-bold mb-4">${item.title}</h4>
                             <p class="text-slate-400 leading-relaxed text-base md:text-lg">${item.desc}</p>
                         </div>
-                        <div class="mt-8">
-                            <img alt="${item.title}" class="w-full h-48 object-cover rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" src="${item.image}"/>
+                        <div class="mt-2">
+                            <img alt="${item.title}" class="w-full h-48 object-cover rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" src="./img/${item.image}"/>
                         </div>
                     `;
                 } else if (item.type === 'wide') {
@@ -284,7 +317,7 @@
                 // Ajuste: min-w agora é 85vw no mobile (evita estourar a tela se tiver padding) e 450px no desktop
                 return `
                 <div class="service-card min-w-[85vw] md:min-w-[450px] aspect-[4/5] relative rounded-2xl overflow-hidden group cursor-pointer shrink-0">
-                    <img alt="${service.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="${service.image}"/>
+                    <img alt="${service.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="./img/${service.image}"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
                     <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
                         <h4 class="text-2xl md:text-3xl font-bold mb-4">${service.title}</h4>
@@ -449,7 +482,7 @@
                 this.root = document.getElementById(rootId);
                 // Adiciona classe para evitar scroll horizontal indesejado no body
                 document.body.classList.add('overflow-x-hidden', 'w-full');
-                
+
                 this.components = [
                     new Header(),
                     new Hero(),
@@ -466,10 +499,52 @@
             }
         }
 
+        // --- LÓGICA DO MENU MOBILE ---
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            const header = document.getElementById('main-header');
+
+            // Verifica se está aberto baseado na classe 'invisible'
+            const isClosed = menu.classList.contains('invisible');
+
+            if (isClosed) {
+                // ABRIR
+                menu.classList.remove('invisible', 'opacity-0', 'translate-y-4');
+                menu.classList.add('visible', 'opacity-100', 'translate-y-0');
+
+                // Troca icone para X
+                icon.innerText = 'close';
+                icon.classList.add('rotate-90', 'text-primary');
+
+                // Remove background glass do header para ficar tudo sólido
+                header.classList.remove('glass-nav');
+
+                // Trava o scroll do body
+                document.body.style.overflow = 'hidden';
+            } else {
+                // FECHAR
+                menu.classList.add('invisible', 'opacity-0', 'translate-y-4');
+                menu.classList.remove('visible', 'opacity-100', 'translate-y-0');
+
+                // Troca icone para Menu
+                icon.innerText = 'menu';
+                icon.classList.remove('rotate-90', 'text-primary');
+
+                // Volta o glass effect
+                header.classList.add('glass-nav');
+
+                // Destrava o scroll
+                document.body.style.overflow = '';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const app = new App('app');
             app.init();
         });
     </script>
 </body>
+
 </html>
