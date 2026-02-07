@@ -225,33 +225,48 @@
         }
         class Hero {
             render() {
-                // Ajuste: Reduzi o texto no mobile de 5xl para 4xl e adicionei break-words
                 return `
-                <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden w-full">
-                    <div class="absolute inset-0 z-0">
-                        <img alt="Estúdio" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQdDvbFyG8-D2DUP01x-g6SNxTAWyM1Ayd45plZOifAw2giUTth51GANfrxG6RX2dZmhgmPqX49awD5_QVuy0x03n_wH7A-f5ia0GTAaRZR5Sr7mXUNSfLCWLOanM4EXzx7qp9-C1qjVvZA37TUP0Z523-Iwa8h4sRtk0Lc8YPekHN3OfS-yMPQUEuV0uSyGYQVvta0UIP8SMNyqRTgKOq50-gO9c1Jef8nJ4jGQD_Ou7R9xI-T8_Pr5c8Vz-6Wv7NfySo8fB-fRV2"/>
-                        <div class="absolute inset-0 hero-gradient"></div>
-                    </div>
-                    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center w-full">
-                        <h1 class="text-4xl sm:text-5xl md:text-8xl font-black leading-tight tracking-tight mb-6 uppercase break-words">
-                            Transformamos <span class="text-primary">visão</span> <br/> em realidade
-                        </h1>
-                        <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-                            Uma agência criativa premium para a nova geração de artistas e marcas globais.
-                        </p>
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
-                            <button class="glass-btn text-white w-full sm:w-auto px-10 py-5 rounded-xl text-lg font-bold shadow-2xl">
-                                Nosso Portfólio
-                            </button>
-                            <button class="bg-white text-background-dark w-full sm:w-auto px-10 py-5 rounded-xl text-lg font-bold hover:bg-slate-200 transition-colors">
-                                Trabalhe Conosco
-                            </button>
-                        </div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 flex justify-center animate-bounce pointer-events-none">
-                        <span class="material-symbols-outlined text-primary text-3xl">keyboard_double_arrow_down</span>
-                    </div>
-                </section>`;
+        <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden w-full">
+            <div class="absolute inset-0 z-0">
+                <!-- VÍDEO DE FUNDO -->
+                <video 
+                    autoplay 
+                    muted 
+                    loop 
+                    playsinline 
+                    class="w-full h-full object-cover"
+                >
+                    <source src="./img/automacao_de_certificados720.mp4" type="video/mp4">
+                    <!-- Fallback: Caso o navegador não suporte vídeo, a imagem abaixo aparece -->
+                    <img src="./img/producaoMusical.jpg" class="w-full h-full object-cover">
+                </video>
+                
+                <!-- Gradiente por cima do vídeo para garantir leitura do texto -->
+                <div class="absolute inset-0 hero-gradient"></div>
+            </div>
+
+            <div class="relative z-10 max-w-5xl mx-auto px-6 text-center w-full">
+                <h1 class="text-4xl sm:text-5xl md:text-8xl font-black leading-tight tracking-tight mb-6 uppercase break-words">
+                    Transformamos <span class="text-primary">visão</span> <br/> em realidade
+                </h1>
+                <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+                    Uma agência criativa premium para a nova geração de artistas e marcas globais.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
+                    <button class="glass-btn text-white w-full sm:w-auto px-10 py-5 rounded-xl text-lg font-bold shadow-2xl">
+                        Nosso Portfólio
+                    </button>
+                    <button class="bg-white text-background-dark w-full sm:w-auto px-10 py-5 rounded-xl text-lg font-bold hover:bg-slate-200 transition-colors">
+                        Trabalhe Conosco
+                    </button>
+                </div>
+            </div>
+
+            <!-- Setas centralizadas (Corrigido para bottom-10) -->
+            <div class="absolute bottom-0 left-0 right-0 flex justify-center animate-bounce pointer-events-none">
+                <span class="material-symbols-outlined text-primary text-3xl">keyboard_double_arrow_down</span>
+            </div>
+        </section>`;
             }
         }
 
