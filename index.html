@@ -248,7 +248,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+                    <div class="absolute bottom-0 left-0 right-0 flex justify-center animate-bounce pointer-events-none">
                         <span class="material-symbols-outlined text-primary text-3xl">keyboard_double_arrow_down</span>
                     </div>
                 </section>`;
@@ -314,45 +314,47 @@
 
         class ServicesSection {
             renderCard(service) {
-                // Ajuste: min-w agora é 85vw no mobile (evita estourar a tela se tiver padding) e 450px no desktop
                 return `
-                <div class="service-card min-w-[85vw] md:min-w-[450px] aspect-[4/5] relative rounded-2xl overflow-hidden group cursor-pointer shrink-0">
-                    <img alt="${service.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="./img/${service.image}"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
-                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
-                        <h4 class="text-2xl md:text-3xl font-bold mb-4">${service.title}</h4>
-                        <div class="overlay-content">
-                            <p class="text-slate-200 mb-6 text-sm leading-relaxed">${service.desc}</p>
-                            <button class="flex items-center gap-2 text-primary font-bold text-sm uppercase">
-                                Ver Detalhes <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
+        <div class="service-card min-w-[85vw] md:min-w-[450px] aspect-[4/5] relative rounded-2xl overflow-hidden group cursor-pointer shrink-0">
+            <img alt="${service.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="./img/${service.image}"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
+            <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+                <h4 class="text-2xl md:text-3xl font-bold mb-4">${service.title}</h4>
+                <div class="overlay-content">
+                    <p class="text-slate-200 mb-6 text-sm leading-relaxed">${service.desc}</p>
+                    <button class="flex items-center gap-2 text-primary font-bold text-sm uppercase">
+                        Ver Detalhes <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </div>`;
             }
 
             render() {
                 return `
-                <section class="py-24 bg-surface-dark/50 w-full overflow-hidden" id="services">
-                    <div class="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                        <div>
-                            <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Nossos Serviços</h2>
-                            <h3 class="text-4xl md:text-5xl font-black uppercase">Especialidades</h3>
-                        </div>
-                        <div class="flex gap-2">
-                            <button class="size-12 rounded-full border border-border-dark flex items-center justify-center hover:bg-primary transition-colors">
-                                <span class="material-symbols-outlined">chevron_left</span>
-                            </button>
-                            <button class="size-12 rounded-full border border-border-dark flex items-center justify-center hover:bg-primary transition-colors">
-                                <span class="material-symbols-outlined">chevron_right</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Carrossel -->
-                    <div class="flex overflow-x-auto gap-6 px-6 md:px-40 pb-10 custom-scrollbar scroll-smooth w-full">
-                        ${SERVICES_DATA.map(service => this.renderCard(service)).join('')}
-                    </div>
-                </section>`;
+        <section class="py-24 bg-surface-dark/50 w-full overflow-hidden" id="services">
+            <div class="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Nossos Serviços</h2>
+                    <h3 class="text-4xl md:text-5xl font-black uppercase">Especialidades</h3>
+                </div>
+                <div class="flex gap-2">
+                    <!-- Botão Anterior -->
+                    <button id="carousel-prev" class="size-12 rounded-full border border-border-dark flex items-center justify-center hover:bg-primary transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <!-- Botão Próximo -->
+                    <button id="carousel-next" class="size-12 rounded-full border border-border-dark flex items-center justify-center hover:bg-primary transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Container do Carrossel com ID -->
+            <div id="carousel-container" class="flex overflow-x-auto gap-6 px-6 md:px-40 pb-10 custom-scrollbar scroll-smooth w-full snap-x snap-mandatory">
+                ${SERVICES_DATA.map(service => this.renderCard(service)).join('')}
+            </div>
+        </section>`;
             }
         }
 
@@ -540,9 +542,35 @@
             }
         }
 
+        // Função para dar vida ao carrossel
+        function initCarousel() {
+            const container = document.getElementById('carousel-container');
+            const prevBtn = document.getElementById('carousel-prev');
+            const nextBtn = document.getElementById('carousel-next');
+
+            if (!container || !prevBtn || !nextBtn) return;
+
+            // Função para calcular quanto rolar (tamanho de um card + o gap)
+            const getScrollAmount = () => {
+                const firstCard = container.querySelector('.service-card');
+                return firstCard ? firstCard.offsetWidth + 24 : 300; // 24 é o gap-6 do Tailwind
+            };
+
+            nextBtn.addEventListener('click', () => {
+                container.scrollLeft += getScrollAmount();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                container.scrollLeft -= getScrollAmount();
+            });
+        }
+
+        // Inicializa o App e o Carrossel
         document.addEventListener('DOMContentLoaded', () => {
             const app = new App('app');
             app.init();
+
+            initCarousel();
         });
     </script>
 </body>
