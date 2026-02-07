@@ -8,6 +8,7 @@
 
     <!-- Dependências -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
     <link
@@ -79,6 +80,15 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.4s ease;
+        }
+        /* Regras iniciais para animações do Hero (GSAP) */
+        .hero-title, .hero-desc, .hero-btns {
+            transform: translateY(30px);
+            will-change: transform, opacity;
+        }
+        /* Ajuste para o vídeo: origem do transform para zoom suave */
+        #hero-video {
+            transform-origin: center center;
         }
     </style>
 </head>
@@ -226,33 +236,32 @@
         class Hero {
             render() {
                 return `
-        <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden w-full">
-            <div class="absolute inset-0 z-0">
-                <!-- VÍDEO DE FUNDO -->
+        <section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden w-full bg-black">
+            <div class="absolute inset-0 z-0 overflow-hidden">
+                <!-- VÍDEO DE FUNDO com ID para animação -->
                 <video 
+                    id="hero-video"
                     autoplay 
                     muted 
                     loop 
                     playsinline 
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover scale-110 grayscale opacity-40"
                 >
                     <source src="./img/automacao_de_certificados720.mp4" type="video/mp4">
-                    <!-- Fallback: Caso o navegador não suporte vídeo, a imagem abaixo aparece -->
                     <img src="./img/producaoMusical.jpg" class="w-full h-full object-cover">
                 </video>
-                
-                <!-- Gradiente por cima do vídeo para garantir leitura do texto -->
                 <div class="absolute inset-0 hero-gradient"></div>
             </div>
 
-            <div class="relative z-10 max-w-5xl mx-auto px-6 text-center w-full">
-                <h1 class="text-4xl sm:text-5xl md:text-8xl font-black leading-tight tracking-tight mb-6 uppercase break-words">
+            <!-- Wrapper para Parallax -->
+            <div id="hero-content" class="relative z-10 max-w-5xl mx-auto px-6 text-center w-full">
+                <h1 class="hero-title opacity-0 text-4xl sm:text-5xl md:text-8xl font-black leading-tight tracking-tight mb-6 uppercase break-words">
                     Transformamos <span class="text-primary">visão</span> <br/> em realidade
                 </h1>
-                <p class="text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+                <p class="hero-desc opacity-0 text-base md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
                     Uma agência criativa premium para a nova geração de artistas e marcas globais.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
+                <div class="hero-btns opacity-0 flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
                     <button class="glass-btn text-white w-full sm:w-auto px-10 py-5 rounded-xl text-lg font-bold shadow-2xl">
                         Nosso Portfólio
                     </button>
@@ -262,8 +271,7 @@
                 </div>
             </div>
 
-            <!-- Setas centralizadas (Corrigido para bottom-10) -->
-            <div class="absolute bottom-0 left-0 right-0 flex justify-center animate-bounce pointer-events-none">
+            <div class="absolute bottom-10 left-0 right-0 flex justify-center animate-bounce pointer-events-none">
                 <span class="material-symbols-outlined text-primary text-3xl">keyboard_double_arrow_down</span>
             </div>
         </section>`;
@@ -580,12 +588,47 @@
             });
         }
 
-        // Inicializa o App e o Carrossel
+        // Inicializa o App, o Carrossel e as animações do Hero
+        function initHeroAnimations() {
+            // 1. Entrada escalonada (Stagger)
+            const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+            tl.to(".hero-title", { opacity: 1, y: 0, duration: 1.5, delay: 0.5 })
+                .to(".hero-desc", { opacity: 1, y: 0, duration: 1.2 }, "-=1")
+                .to(".hero-btns", { opacity: 1, y: 0, duration: 1 }, "-=0.8");
+
+            // 2. Efeito de Zoom Contínuo no Vídeo
+            gsap.to("#hero-video", {
+                scale: 1,
+                duration: 10,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+
+            // 3. Parallax de Mouse (Apenas em Desktop para performance)
+            if (window.innerWidth > 1024) {
+                window.addEventListener("mousemove", (e) => {
+                    const { clientX, clientY } = e;
+                    const xPos = (clientX / window.innerWidth - 0.5) * 30;
+                    const yPos = (clientY / window.innerHeight - 0.5) * 30;
+
+                    gsap.to("#hero-content", {
+                        x: xPos,
+                        y: yPos,
+                        duration: 2,
+                        ease: "power2.out"
+                    });
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const app = new App('app');
             app.init();
 
             initCarousel();
+            if (typeof gsap !== 'undefined') initHeroAnimations();
         });
     </script>
 </body>
