@@ -9,6 +9,7 @@
     <!-- Dependências -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
     <link
@@ -81,8 +82,9 @@
             transform: translateY(20px);
             transition: all 0.4s ease;
         }
-        /* Regras iniciais para animações do Hero (GSAP) */
-        .hero-title, .hero-desc, .hero-btns {
+        /* Regras iniciais para animações (GSAP) */
+        .hero-title, .hero-desc, .hero-btns, .reveal {
+            opacity: 0;
             transform: translateY(30px);
             will-change: transform, opacity;
         }
@@ -318,13 +320,13 @@
                     `;
                 }
 
-                return `<div class="${gridClasses} w-full">${content}</div>`;
+                return `<div class="${gridClasses} w-full reveal">${content}</div>`;
             }
 
             render() {
                 return `
                 <section class="py-24 px-6 max-w-7xl mx-auto w-full overflow-hidden" id="for-whom">
-                    <div class="mb-16">
+                    <div class="mb-16 reveal">
                         <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Público-Alvo</h2>
                         <h3 class="text-4xl md:text-5xl font-black uppercase break-words">Feito para os audazes</h3>
                     </div>
@@ -338,7 +340,7 @@
         class ServicesSection {
             renderCard(service) {
                 return `
-        <div class="service-card min-w-[85vw] md:min-w-[450px] aspect-[4/5] relative rounded-2xl overflow-hidden group cursor-pointer shrink-0">
+        <div class="service-card min-w-[85vw] md:min-w-[450px] aspect-[4/5] relative rounded-2xl overflow-hidden group cursor-pointer shrink-0 reveal">
             <img alt="${service.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="./img/${service.image}"/>
             <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent"></div>
             <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
@@ -357,11 +359,11 @@
                 return `
         <section class="py-24 bg-surface-dark/50 w-full overflow-hidden" id="services">
             <div class="max-w-7xl mx-auto px-6 mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                <div>
+                <div class="reveal">
                     <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Nossos Serviços</h2>
                     <h3 class="text-4xl md:text-5xl font-black uppercase">Especialidades</h3>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 reveal">
                     <!-- Botão Anterior -->
                     <button id="carousel-prev" class="size-12 rounded-full border border-border-dark flex items-center justify-center hover:bg-primary transition-colors active:scale-90">
                         <span class="material-symbols-outlined">chevron_left</span>
@@ -384,7 +386,7 @@
         class TeamSection {
             renderMember(member) {
                 return `
-                <div class="text-center group">
+                <div class="text-center group reveal">
                     <div class="relative size-40 md:size-48 mx-auto mb-6 rounded-full overflow-hidden border-2 border-border-dark group-hover:border-primary transition-all p-2">
                         <img alt="${member.name}" class="w-full h-full object-cover rounded-full" src="${member.img}"/>
                     </div>
@@ -400,7 +402,7 @@
             render() {
                 return `
                 <section class="py-24 max-w-7xl mx-auto px-6 w-full" id="team">
-                    <div class="text-center mb-16">
+                    <div class="text-center mb-16 reveal">
                         <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Os Criadores</h2>
                         <h3 class="text-4xl md:text-5xl font-black uppercase">Time Visionário</h3>
                     </div>
@@ -416,14 +418,14 @@
                 return `
                 <section class="bg-surface-dark border-t border-border-dark w-full" id="contact">
                     <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-2 gap-20">
-                        <div>
+                        <div class="reveal">
                             <h2 class="text-primary font-bold tracking-widest text-sm uppercase mb-4">Entre em Contato</h2>
                             <h3 class="text-3xl md:text-6xl font-black mb-8 uppercase leading-tight">Pronto para iniciar seu projeto?</h3>
                             <p class="text-slate-400 text-lg mb-10 leading-relaxed">
                                 Estamos sempre em busca do próximo grande desafio.
                             </p>
                             <div class="space-y-6">
-                                <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-4 reveal">
                                     <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
                                         <span class="material-symbols-outlined">mail</span>
                                     </div>
@@ -432,7 +434,7 @@
                                         <p class="text-lg truncate">contato@agenciakjp.com</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-4 reveal">
                                     <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
                                         <span class="material-symbols-outlined">location_on</span>
                                     </div>
@@ -443,7 +445,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-background-dark/50 p-6 md:p-12 rounded-2xl border border-border-dark w-full">
+                        <div class="bg-background-dark/50 p-6 md:p-12 rounded-2xl border border-border-dark w-full reveal">
                             <form class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div class="space-y-2">
@@ -623,12 +625,38 @@
             }
         }
 
+        // Função para animações de Scroll em todo o site
+        function initScrollAnimations() {
+            if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const RevealElements = document.querySelectorAll('.reveal');
+
+            RevealElements.forEach((el) => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 85%", // Dispara quando o topo do elemento chega a 85% do viewport
+                        toggleActions: "play none none none" // Joga apenas uma vez
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power3.out"
+                });
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const app = new App('app');
             app.init();
 
             initCarousel();
-            if (typeof gsap !== 'undefined') initHeroAnimations();
+            if (typeof gsap !== 'undefined') {
+                initHeroAnimations();
+                initScrollAnimations();
+            }
         });
     </script>
 </body>
