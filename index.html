@@ -594,19 +594,27 @@
                 const cardWidth = firstCard.offsetWidth;
                 const gap = 24; // gap-6 do Tailwind
 
-                // A distância de repetição é a largura de 4 cards + 4 gaps
-                // (O último card do set tem um gap depois dele antes do próximo set começar)
-                const singleSetWidth = (cardWidth + gap) * 4;
+                // Calcula a largura de um conjunto completo dinamicamente
+                const singleSetWidth = (cardWidth + gap) * SERVICES_DATA.length;
+
+                // Tolerância para detecção (metade de um card)
+                const threshold = 50;
 
                 // Se o usuário rolou para a ESQUERDA e entrou no buffer (Set 1)
-                // Vamos usar um buffer maior para evitar bater na borda 0
-                if (container.scrollLeft <= 50) {
+                if (container.scrollLeft <= threshold) {
                     isTransitioning = true;
+
+                    // Desabilita smooth scroll e snap temporariamente
                     container.style.scrollBehavior = 'auto';
                     container.style.scrollSnapType = 'none';
 
+                    // Pula para o set central
                     container.scrollLeft += singleSetWidth;
 
+                    // Força um reflow para garantir que o navegador aplique a mudança imediatamente
+                    void container.offsetWidth;
+
+                    // Reativa os efeitos visuais no próximo frame
                     requestAnimationFrame(() => {
                         container.style.scrollBehavior = 'smooth';
                         container.style.scrollSnapType = 'x mandatory';
@@ -614,12 +622,15 @@
                     });
                 }
                 // Se o usuário rolou para a DIREITA e entrou no buffer final (Set 3)
-                else if (container.scrollLeft >= singleSetWidth * 2 - 50) {
+                else if (container.scrollLeft >= singleSetWidth * 2 - threshold) {
                     isTransitioning = true;
+
                     container.style.scrollBehavior = 'auto';
                     container.style.scrollSnapType = 'none';
 
                     container.scrollLeft -= singleSetWidth;
+
+                    void container.offsetWidth;
 
                     requestAnimationFrame(() => {
                         container.style.scrollBehavior = 'smooth';
@@ -636,19 +647,25 @@
 
                 const cardWidth = firstCard.offsetWidth;
                 const gap = 24;
-                const singleSetWidth = (cardWidth + gap) * 4;
+                const singleSetWidth = (cardWidth + gap) * SERVICES_DATA.length;
 
                 container.style.scrollBehavior = 'auto';
+                container.style.scrollSnapType = 'none'; // Importante desativar snap ao centralizar inicial
                 container.scrollLeft = singleSetWidth;
 
-                // Pequeno delay para reativar o smooth scroll
-                setTimeout(() => {
+                // Reativa smooth scroll após renderização inicial
+                requestAnimationFrame(() => {
                     container.style.scrollBehavior = 'smooth';
-                }, 500);
+                    container.style.scrollSnapType = 'x mandatory';
+                });
             };
 
-            // Recalcula ao redimensionar a tela para manter a proporção
-            window.addEventListener('resize', centerCarousel);
+            // Recalcula ao redimensionar a tela
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(centerCarousel, 100);
+            });
 
             // Aguarda imagens carregarem
             window.addEventListener('load', centerCarousel);
@@ -658,52 +675,86 @@
             container.addEventListener('scroll', infiniteScrollHandler);
 
             const scrollNext = () => {
+                if (isTransitioning) return;
                 container.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
             };
 
             const scrollPrev = () => {
+                if (isTransitioning) return;
                 container.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
             };
 
             nextBtn.addEventListener('click', scrollNext);
             prevBtn.addEventListener('click', scrollPrev);
 
-            // Auto-play functionality com debounce para suportar mobile/inércia
+            // Auto-play functionality
             let autoScrollTimer;
+            let isInteracting = false;
 
-            const resetAutoScroll = () => {
-                if (autoScrollTimer) clearTimeout(autoScrollTimer);
+            const startAutoScroll = () => {
+                if (isInteracting) return;
+
+                clearTimeout(autoScrollTimer);
                 autoScrollTimer = setTimeout(() => {
-                    // Verifica se o mouse está em cima antes de rolar
-                    if (!container.matches(':hover')) {
+                    if (!container.matches(':hover') && !isInteracting) {
                         scrollNext();
                     }
+                    startAutoScroll(); // Agenda o próximo
                 }, 3000);
             };
 
-            // Adiciona listener de scroll para resetar o timer a cada movimento (seja manual ou automático)
-            // Isso garante que enquanto o usuário (ou a inércia do mobile) estiver rolando, o auto-scroll espera
+            const stopAutoScroll = () => {
+                clearTimeout(autoScrollTimer);
+            };
+
+            // Interação do usuário deve pausar o auto-scroll
+            const onInteractionStart = () => {
+                isInteracting = true;
+                stopAutoScroll();
+            };
+
+            const onInteractionEnd = () => {
+                isInteracting = false;
+                startAutoScroll();
+            };
+
+            // Eventos de Mouse
+            container.addEventListener('mouseenter', onInteractionStart);
+            container.addEventListener('mouseleave', onInteractionEnd);
+            prevBtn.addEventListener('mouseenter', onInteractionStart);
+            prevBtn.addEventListener('mouseleave', onInteractionEnd);
+            nextBtn.addEventListener('mouseenter', onInteractionStart);
+            nextBtn.addEventListener('mouseleave', onInteractionEnd);
+
+            // Eventos de Touch
+            container.addEventListener('touchstart', () => {
+                onInteractionStart();
+            }, { passive: true });
+
+            container.addEventListener('touchend', () => {
+                // Pequeno delay no touch end para evitar restart imediato se o usuário estiver apenas pausando
+                setTimeout(onInteractionEnd, 1000);
+            }, { passive: true });
+
+            // Detecta scroll manual (wheel ou touch drag)
+            let scrollTimeout;
             container.addEventListener('scroll', () => {
-                infiniteScrollHandler(); // Mantém a lógica do loop infinito
-                resetAutoScroll();       // Reinicia a contagem de 3 segundos
-            });
+                infiniteScrollHandler();
 
-            // Listeners para pausa explícita no hover/touch
-            container.addEventListener('mouseenter', () => clearTimeout(autoScrollTimer));
-            container.addEventListener('mouseleave', resetAutoScroll);
+                // Se detectamos scroll, consideramos interação
+                isInteracting = true;
+                stopAutoScroll();
 
-            container.addEventListener('touchstart', () => clearTimeout(autoScrollTimer), { passive: true });
-            container.addEventListener('touchend', resetAutoScroll, { passive: true });
+                // Debounce para detectar fim do scroll
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    isInteracting = false;
+                    startAutoScroll();
+                }, 150);
+            }, { passive: true });
 
-            [prevBtn, nextBtn].forEach(btn => {
-                btn.addEventListener('mouseenter', () => clearTimeout(autoScrollTimer));
-                btn.addEventListener('mouseleave', resetAutoScroll);
-                btn.addEventListener('touchstart', () => clearTimeout(autoScrollTimer), { passive: true });
-                btn.addEventListener('touchend', resetAutoScroll, { passive: true });
-            });
-
-            // Inicia o ciclo
-            resetAutoScroll();
+            // Inicia
+            startAutoScroll();
         }
 
         // Inicializa o App, o Carrossel e as animações do Hero
