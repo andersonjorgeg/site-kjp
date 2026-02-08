@@ -634,30 +634,42 @@
             nextBtn.addEventListener('click', scrollNext);
             prevBtn.addEventListener('click', scrollPrev);
 
-            // Auto-play functionality
-            let autoScrollInterval = setInterval(scrollNext, 3000);
+            // Auto-play functionality com debounce para suportar mobile/inércia
+            let autoScrollTimer;
 
-            // Pausa no hover
-            const pause = () => clearInterval(autoScrollInterval);
-            const resume = () => {
-                clearInterval(autoScrollInterval);
-                autoScrollInterval = setInterval(scrollNext, 3000);
+            const resetAutoScroll = () => {
+                if (autoScrollTimer) clearTimeout(autoScrollTimer);
+                autoScrollTimer = setTimeout(() => {
+                    // Verifica se o mouse está em cima antes de rolar
+                    if (!container.matches(':hover')) {
+                        scrollNext();
+                    }
+                }, 3000);
             };
 
-            container.addEventListener('mouseenter', pause);
-            container.addEventListener('mouseleave', resume);
+            // Adiciona listener de scroll para resetar o timer a cada movimento (seja manual ou automático)
+            // Isso garante que enquanto o usuário (ou a inércia do mobile) estiver rolando, o auto-scroll espera
+            container.addEventListener('scroll', () => {
+                infiniteScrollHandler(); // Mantém a lógica do loop infinito
+                resetAutoScroll();       // Reinicia a contagem de 3 segundos
+            });
 
-            // Pausa no toque (mobile) para evitar conflitos
-            container.addEventListener('touchstart', pause, { passive: true });
-            container.addEventListener('touchend', resume, { passive: true });
+            // Listeners para pausa explícita no hover/touch
+            container.addEventListener('mouseenter', () => clearTimeout(autoScrollTimer));
+            container.addEventListener('mouseleave', resetAutoScroll);
+
+            container.addEventListener('touchstart', () => clearTimeout(autoScrollTimer), { passive: true });
+            container.addEventListener('touchend', resetAutoScroll, { passive: true });
 
             [prevBtn, nextBtn].forEach(btn => {
-                btn.addEventListener('mouseenter', pause);
-                btn.addEventListener('mouseleave', resume);
-                // Também para botões no mobile, caso tenham width suficiente para toque
-                btn.addEventListener('touchstart', pause, { passive: true });
-                btn.addEventListener('touchend', resume, { passive: true });
+                btn.addEventListener('mouseenter', () => clearTimeout(autoScrollTimer));
+                btn.addEventListener('mouseleave', resetAutoScroll);
+                btn.addEventListener('touchstart', () => clearTimeout(autoScrollTimer), { passive: true });
+                btn.addEventListener('touchend', resetAutoScroll, { passive: true });
             });
+
+            // Inicia o ciclo
+            resetAutoScroll();
         }
 
         // Inicializa o App, o Carrossel e as animações do Hero
