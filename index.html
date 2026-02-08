@@ -588,29 +588,59 @@
             const infiniteScrollHandler = () => {
                 if (isTransitioning) return;
 
-                const totalWidth = container.scrollWidth;
-                const setWidth = totalWidth / 3;
-                const buffer = 50; // Tolerância para bordas
+                const firstCard = container.querySelector('.service-card');
+                if (!firstCard) return;
 
-                // Se o usuário rolou até o INÍCIO do conjunto 1 (ponta esquerda)
-                if (container.scrollLeft <= buffer) {
+                const cardWidth = firstCard.offsetWidth;
+                const gap = 24; // gap-6 do Tailwind
+
+                // A distância de repetição é a largura de 4 cards + 4 gaps
+                // (O último card do set tem um gap depois dele antes do próximo set começar)
+                const singleSetWidth = (cardWidth + gap) * 4;
+
+                // Se o usuário rolou para a ESQUERDA e entrou no buffer (Set 1)
+                // Vamos usar um buffer maior para evitar bater na borda 0
+                if (container.scrollLeft <= 50) {
+                    isTransitioning = true;
                     container.style.scrollBehavior = 'auto';
-                    container.scrollLeft += setWidth; // Pula para o início do conjunto 2
-                    container.style.scrollBehavior = 'smooth';
+                    container.style.scrollSnapType = 'none';
+
+                    container.scrollLeft += singleSetWidth;
+
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                        container.style.scrollSnapType = 'x mandatory';
+                        isTransitioning = false;
+                    });
                 }
-                // Se o usuário rolou até o FINAL do conjunto 3 (ponta direita)
-                else if (container.scrollLeft + container.clientWidth >= totalWidth - buffer) {
+                // Se o usuário rolou para a DIREITA e entrou no buffer final (Set 3)
+                else if (container.scrollLeft >= singleSetWidth * 2 - 50) {
+                    isTransitioning = true;
                     container.style.scrollBehavior = 'auto';
-                    container.scrollLeft -= setWidth; // Pula para o final do conjunto 2
-                    container.style.scrollBehavior = 'smooth';
+                    container.style.scrollSnapType = 'none';
+
+                    container.scrollLeft -= singleSetWidth;
+
+                    requestAnimationFrame(() => {
+                        container.style.scrollBehavior = 'smooth';
+                        container.style.scrollSnapType = 'x mandatory';
+                        isTransitioning = false;
+                    });
                 }
             };
 
             // Centraliza o carrossel no carregamento para que o set 2 seja o visível
             const centerCarousel = () => {
-                const setWidth = container.scrollWidth / 3;
+                const firstCard = container.querySelector('.service-card');
+                if (!firstCard) return;
+
+                const cardWidth = firstCard.offsetWidth;
+                const gap = 24;
+                const singleSetWidth = (cardWidth + gap) * 4;
+
                 container.style.scrollBehavior = 'auto';
-                container.scrollLeft = setWidth;
+                container.scrollLeft = singleSetWidth;
+
                 // Pequeno delay para reativar o smooth scroll
                 setTimeout(() => {
                     container.style.scrollBehavior = 'smooth';
