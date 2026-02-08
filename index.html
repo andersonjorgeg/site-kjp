@@ -588,23 +588,25 @@
             const infiniteScrollHandler = () => {
                 if (isTransitioning) return;
 
-                // Largura total de um conjunto de dados
                 const totalWidth = container.scrollWidth;
                 const setWidth = totalWidth / 3;
+                const buffer = 50; // Tolerância para bordas
 
-                // Tolerância (10px) para garantir que a lógica dispare
-                if (container.scrollLeft >= 2 * setWidth - 50) {
-                    container.style.scrollBehavior = 'auto'; // Remove animação
-                    container.scrollLeft -= setWidth;
-                    container.style.scrollBehavior = 'smooth'; // Volta animação
-                } else if (container.scrollLeft <= setWidth - 50) {
-                    container.style.scrollBehavior = 'auto'; // Remove animação
-                    container.scrollLeft += setWidth;
-                    container.style.scrollBehavior = 'smooth'; // Volta animação
+                // Se o usuário rolou até o INÍCIO do conjunto 1 (ponta esquerda)
+                if (container.scrollLeft <= buffer) {
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft += setWidth; // Pula para o início do conjunto 2
+                    container.style.scrollBehavior = 'smooth';
+                }
+                // Se o usuário rolou até o FINAL do conjunto 3 (ponta direita)
+                else if (container.scrollLeft + container.clientWidth >= totalWidth - buffer) {
+                    container.style.scrollBehavior = 'auto';
+                    container.scrollLeft -= setWidth; // Pula para o final do conjunto 2
+                    container.style.scrollBehavior = 'smooth';
                 }
             };
 
-            // Centraliza o carrossel no carregamento para que o loop funcione em ambas as direções
+            // Centraliza o carrossel no carregamento para que o set 2 seja o visível
             const centerCarousel = () => {
                 const setWidth = container.scrollWidth / 3;
                 container.style.scrollBehavior = 'auto';
@@ -612,11 +614,13 @@
                 // Pequeno delay para reativar o smooth scroll
                 setTimeout(() => {
                     container.style.scrollBehavior = 'smooth';
-                }, 800);
+                }, 500);
             };
 
-            // Aguarda imagens carregarem para calcular largura correta
-            // Mas como temos width fixo/proporcional, podemos tentar logo
+            // Recalcula ao redimensionar a tela para manter a proporção
+            window.addEventListener('resize', centerCarousel);
+
+            // Aguarda imagens carregarem
             window.addEventListener('load', centerCarousel);
             // Fallback imediato
             setTimeout(centerCarousel, 100);
